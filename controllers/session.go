@@ -63,11 +63,14 @@ func (this *SessionController) Get() {
 				UserMap["LastLoginIp"] = &us.LastLoginIp
 				UserMap["LastLoginAt"] = &us.LastLoginAt
 				this.SetSession(Id, UserMap)
-				jsonStr = utils.CreateMessage(1, "get user info successful", UserMap)
 			} else {
 				jsonStr = utils.CreateMessage(0, "get user info error")
 			}
 		}
+	}
+	if jsonStr == "" {
+		jsonStr = utils.CreateMessage(1, "get user info successful",
+			this.GetSession(Id).(map[string]interface{}))
 	}
 	this.Data["json"] = jsonStr
 	this.ServeJSON()

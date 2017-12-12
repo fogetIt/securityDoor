@@ -139,6 +139,8 @@ func (this *CodeController) Get() {
 				fmt.Println("Get an object. Id:", id)
 			}
 			jsonStr = utils.CreateMessage(1, "send verification code successful")
+		} else {
+			jsonStr = utils.CreateMessage(0, "send verification code successful, but database error")
 		}
 	}
 	this.Data["json"] = jsonStr
