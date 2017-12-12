@@ -103,22 +103,31 @@ func (this *UserController) Post() {
 				jsonStr = utils.CreateMessage(0, errorText)
 			} else {
 				this.DelSession(sessionKey)
-				user := models.User{
-					Mobile: Mobile,
-					Email: Email,
-					Status: UserStatus}
-				user.Pwd = Password
-				user.Update("Pwd")
-
+				/*
+				orm.NewOrm().Update() 必须要有主键
+				 */
+				if num, err := orm.NewOrm().QueryTable("user").
+					Filter("Mobile", Mobile).
+					Filter("Email", Email).
+					Filter("Status", UserStatus).
+					Update(orm.Params{"Pwd": Password}); num == 0 || err != nil {
+					utils.Logger().Error("Update error")
+				}
 				if UserStatus == 0 {
 					addr := this.Ctx.Input.IP()
-
-					user.CreateIp = addr
-					user.UserName = UserName
-					user.Status = 1
-					user.Update("CreateIp", "UserName", "Status", "CreateAt")
+					if num, err := orm.NewOrm().QueryTable("user").
+						Filter("Mobile", Mobile).
+						Filter("Email", Email).
+						Filter("Status", UserStatus).
+						Update(orm.Params{
+							"CreateIp": addr,
+							"UserName": UserName,
+							"Status": 1,
+							//"CreateAt"
+						}); num == 0 || err != nil {
+						utils.Logger().Error("Update error")
+					}
 				}
-
 				var us models.User
 				var UserType string
 				err := orm.NewOrm().QueryTable(new(models.User)).

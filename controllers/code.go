@@ -130,7 +130,7 @@ func (this *CodeController) Get() {
 		jsonStr = utils.CreateMessage(0, errorText)
 	} else {
 		user := models.User{Mobile: Mobile, Email: Email, Status: 0}
-		// 返回参数：是否新创建， Id 值，错误
+		// 返回参数：是否新创建， Id ，错误
 		if created, id, err := orm.NewOrm().
 			ReadOrCreate(&user, "Mobile", "Email", "Status"); err == nil {
 			if created {

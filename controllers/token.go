@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"time"
 	"strconv"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
@@ -51,11 +52,15 @@ func (this *TokenController) Get() {
 			} else {
 				addr := this.Ctx.Input.IP()
 
-				user := models.User{
-					Mobile: Mobile,
-					Email: Email}
-				user.LastLoginIp = addr
-				user.Update("LastLoginIp", "LastLoginAt", "ModifyAt")
+				if num, err := orm.NewOrm().QueryTable("user").
+					Filter("Mobile", Mobile).
+					Filter("Email", Email).
+					Update(orm.Params{
+						"LastLoginIp": addr,
+						"LastLoginAt": time.Now(),
+						}); num == 0 || err == nil {
+					utils.Logger().Error("Update error")
+				}
 
 				var tokenMap = make(map[string]interface{})
 				token := utils.GenerateToken(strconv.Itoa(int(us.UserId)))

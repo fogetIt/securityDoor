@@ -9,6 +9,7 @@ import (
 	"github.com/astaxie/beego/plugins/cors"
 	"securityDoor/models"
 	"securityDoor/utils"
+	"github.com/astaxie/beego/orm"
 )
 
 
@@ -17,8 +18,8 @@ TODO  ip 白名单拦截
  */
 var verifyAdmin = func(ctx *context.Context)  {
 	if Ip := ctx.Input.IP(); Ip != "127.0.0.1" {
-		iw := models.IpWhite{Ip: Ip}
-		if _, b := iw.Read(); !b {
+		if orm.NewOrm().QueryTable("ip_white").
+			Filter("Ip", Ip).Exist() {
 			ctx.Abort(401, "ip error")
 		}
 	}

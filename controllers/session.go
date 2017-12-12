@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"strconv"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"securityDoor/utils"
@@ -53,7 +52,16 @@ func (this *SessionController) Get() {
 				Filter("UserId", Id).One(&us)
 			if err == nil {
 				UserMap = make(map[string]interface{})
-				UserMap[strconv.Itoa(int(us.UserId))] = &us
+				UserMap["Email"] = &us.Email
+				UserMap["Status"] = &us.Status
+				UserMap["Mobile"] = &us.Mobile
+				UserMap["UserId"] = &us.UserId
+				UserMap["CreateIp"] = &us.CreateIp
+				UserMap["UserName"] = &us.UserName
+				UserMap["CreateAt"] = &us.CreateAt
+				UserMap["ModifyAt"] = &us.ModifyAt
+				UserMap["LastLoginIp"] = &us.LastLoginIp
+				UserMap["LastLoginAt"] = &us.LastLoginAt
 				this.SetSession(Id, UserMap)
 				jsonStr = utils.CreateMessage(1, "get user info successful", UserMap)
 			} else {
