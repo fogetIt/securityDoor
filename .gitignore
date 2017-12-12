@@ -1,0 +1,8 @@
+.idea/
+swagger/
+views/
+static/
+
+*.tmp
+routers/commentsRouter_controllers.go
+securityDoor
